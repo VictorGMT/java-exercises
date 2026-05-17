@@ -1,32 +1,45 @@
 package aplication;
 
 import Entities.Contrato;
-import Services.PagamentoService;
+import Entities.Installment;
+import Services.ContractService;
+import Services.PaypalService;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+
+        Locale.setDefault(Locale.US);
         Scanner sc = new Scanner(System.in);
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-        System.out.println("Digite o numero do contrato: ");
-        Integer nome = sc.nextInt();
-        System.out.println("Digite a data do contrato(DD/MM/YYYY): ");
-        LocalDate data = LocalDate.parse(sc.next(), dtf);
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-        System.out.println("Digite o valor total do contrato: ");
-        Double total = sc.nextDouble();
+        System.out.println("Entre os dados do contrato:");
+        System.out.print("Numero: ");
+        int number = sc.nextInt();
+        System.out.print("Data (dd/MM/yyyy): ");
+        LocalDate date = LocalDate.parse(sc.next(), fmt);
+        System.out.print("Valor do contrato: ");
+        double totalValue = sc.nextDouble();
 
-        Contrato contrato = new Contrato(nome, data, total);
+        Contrato obj = new Contrato(number, date, totalValue);
 
-        System.out.println("Digite a quantidade de parcelas: ");
-        Integer numParcelas = sc.nextInt();
+        System.out.print("Entre com o numero de parcelas: ");
+        int n = sc.nextInt();
 
-        System.out.println("Parcelas: ");
-        contrato.getParcelasContrato(contrato, numParcelas);
+        ContractService contractService = new ContractService(new PaypalService());
 
+        contractService.processContract(obj, n);
+
+        System.out.println("Parcelas:");
+        for (Installment installment : obj.getInstallments()) {
+            System.out.println(installment);
+        }
+
+        sc.close();
     }
 }

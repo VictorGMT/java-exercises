@@ -4,6 +4,7 @@ import Entities.Contrato;
 
 public interface ServicoPagamento {
 
-    void parcelasContrato(Contrato contrato, int parcelas);
+    double interests(double amount, int parcelas);
+    double paymentFees(double amount);
 
 }
